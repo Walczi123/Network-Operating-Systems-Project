@@ -48,7 +48,7 @@ public class BookingService {
         return pages;
     }
 
-    public PageForm getAll(String filter,String itemType,String dateFromString,String dateToString,String username, Integer pageSize, Integer pageNumber, User currentUser) {
+    public PageForm getAll(String dateFromString, String dateToString, String username, Integer pageSize, Integer pageNumber, User currentUser) {
         List<Booking> bookings;
         if (currentUser.getRole().equals("USER"))
             bookings = bookingRepository.findByOwner(currentUser.getId());
@@ -61,10 +61,6 @@ public class BookingService {
         for (Booking book : bookings) {
             bookingForms.add(new BookingForm(book, userService.getUsername(book.getOwner())));
         }
-        if (filter != null && !filter.equals("") && filter.matches("active|inactive"))
-            bookingForms.removeIf(booking -> booking.getActive() != filter.equals("active"));
-        if (itemType != null && !itemType.equals(""))
-            bookingForms.removeIf(booking -> !itemType.equals(booking.getItemType()));
         if (dateFromString != null && !dateFromString.equals("")) {
             LocalDate dateFrom = LocalDate.parse(dateFromString);
             bookingForms.removeIf(booking -> dateFrom.compareTo(booking.getStartDateTime()) > 0);
