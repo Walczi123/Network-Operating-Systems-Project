@@ -25,17 +25,25 @@ public class BookingForm extends Booking {
 
     public void setStartDateTime(LocalDate startDateTime) { super.setStartDateTime(startDateTime); }
 
-    public boolean getActive() { return super.getActive(); }
+    public LocalDate getEndDateTime() { return super.getEndDateTime(); }
 
-    public void setActive(boolean active) { super.setActive(active); }
+    public void setEndDateTime(LocalDate endDateTime) { super.setEndDateTime(endDateTime); }
 
-    public int getItemId() { return super.getItemId(); }
+    public double getCostPerDay() { return super.getCostPerDay(); }
 
-    public void setItemId(int itemId) { super.setItemId(itemId); }
+    public void setCostPerDay(double costPerDay) { super.setCostPerDay(costPerDay); }
 
-    public String getItemType() { return super.getItemType(); }
+    public String getPostCode() { return super.getPostCode(); }
 
-    public void setItemType(String itemType) { super.setItemType(itemType); }
+    public void setPostCode(String postCode) { super.setPostCode(postCode); }
+
+    public String getCity() { return super.getCity(); }
+
+    public void setCity(String city) { super.setCity(city); }
+
+    public String getStreet() { return super.getStreet(); }
+
+    public void setStreet(String street) { super.setStreet(street); }
 
     public String getDetails() { return super.getDetails(); }
 
