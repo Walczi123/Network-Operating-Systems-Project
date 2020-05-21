@@ -38,8 +38,7 @@ public class BookingController {
 
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("")
-    public ResponseEntity<PageForm> getAllBookings(@RequestParam(name = "filter", required = false) String filter,
-                                                   @RequestParam(name = "dateFrom", required = false) String dateFromString,
+    public ResponseEntity<PageForm> getAllBookings(@RequestParam(name = "dateFrom", required = false) String dateFromString,
                                                    @RequestParam(name = "dateTo", required = false) String dateToString,
                                                    @RequestParam(name = "username", required = false) String username,
                                                    @RequestParam(name = "pageSize", required = false) Integer pageSize,
@@ -47,7 +46,7 @@ public class BookingController {
                                                    @RequestHeader(name = "Authorization") String requestAuthorizationHeader) {
         String token = requestAuthorizationHeader.substring(7);
         User currentUser = userService.getUserByToken(token);
-        return ResponseEntity.ok().body(bookingService.getAll(filter, dateFromString, dateToString, username, pageSize, pageNumber, currentUser));
+        return ResponseEntity.ok().body(bookingService.getAll(dateFromString, dateToString, username, pageSize, pageNumber, currentUser));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
