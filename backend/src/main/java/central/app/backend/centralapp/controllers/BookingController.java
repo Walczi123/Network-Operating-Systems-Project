@@ -38,15 +38,21 @@ public class BookingController {
 
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("")
-    public ResponseEntity<PageForm> getAllBookings(@RequestParam(name = "dateFrom", required = false) String dateFromString,
-                                                   @RequestParam(name = "dateTo", required = false) String dateToString,
+    public ResponseEntity<PageForm> getAllBookings(@RequestParam(name = "startDateFrom", required = false) String startDateFromString,
+                                                   @RequestParam(name = "startDateTo", required = false) String startDateToString,
+                                                   @RequestParam(name = "endDateFrom", required = false) String endDateFromString,
+                                                   @RequestParam(name = "endDateTo", required = false) String endDateToString,
+                                                   @RequestParam(name = "cost", required = false) Double cost,
                                                    @RequestParam(name = "username", required = false) String username,
+                                                   @RequestParam(name = "postCode", required = false) String postCode,
+                                                   @RequestParam(name = "city", required = false) String city,
+                                                   @RequestParam(name = "street", required = false) String street,
                                                    @RequestParam(name = "pageSize", required = false) Integer pageSize,
                                                    @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
                                                    @RequestHeader(name = "Authorization") String requestAuthorizationHeader) {
         String token = requestAuthorizationHeader.substring(7);
         User currentUser = userService.getUserByToken(token);
-        return ResponseEntity.ok().body(bookingService.getAll(dateFromString, dateToString, username, pageSize, pageNumber, currentUser));
+        return ResponseEntity.ok().body(bookingService.getAll(startDateFromString, startDateToString, endDateFromString, endDateToString, cost, postCode, city, street, username, pageSize, pageNumber, currentUser));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','USER')")

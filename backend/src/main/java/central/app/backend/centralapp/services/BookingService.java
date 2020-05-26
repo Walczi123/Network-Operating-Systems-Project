@@ -48,7 +48,7 @@ public class BookingService {
         return pages;
     }
 
-    public PageForm getAll(String dateFromString, String dateToString, String username, Integer pageSize, Integer pageNumber, User currentUser) {
+    public PageForm getAll(String startDateFromString, String startDateToString, String endDateFromString, String endDateToString, Double cost, String post_code, String city, String street,  String username, Integer pageSize, Integer pageNumber, User currentUser) {
         List<Booking> bookings;
         if (currentUser.getRole().equals("USER"))
             bookings = bookingRepository.findByOwner(currentUser.getId());
@@ -61,13 +61,33 @@ public class BookingService {
         for (Booking book : bookings) {
             bookingForms.add(new BookingForm(book, userService.getUsername(book.getOwner())));
         }
-        if (dateFromString != null && !dateFromString.equals("")) {
-            LocalDate dateFrom = LocalDate.parse(dateFromString);
+        if (startDateFromString != null && !startDateFromString.equals("")) {
+            LocalDate dateFrom = LocalDate.parse(startDateFromString);
             bookingForms.removeIf(booking -> dateFrom.compareTo(booking.getStartDateTime()) > 0);
         }
-        if (dateToString != null && !dateToString.equals("")) {
-            LocalDate dateTo = LocalDate.parse(dateToString);
+        if (startDateToString != null && !startDateToString.equals("")) {
+            LocalDate dateTo = LocalDate.parse(startDateToString);
             bookingForms.removeIf(booking -> dateTo.compareTo(booking.getStartDateTime()) < 0);
+        }
+        if (endDateFromString != null && !endDateFromString.equals("")) {
+            LocalDate dateFrom = LocalDate.parse(endDateFromString);
+            bookingForms.removeIf(booking -> dateFrom.compareTo(booking.getEndDateTime()) > 0);
+        }
+        if (endDateToString != null && !endDateToString.equals("")) {
+            LocalDate dateTo = LocalDate.parse(endDateToString);
+            bookingForms.removeIf(booking -> dateTo.compareTo(booking.getEndDateTime()) < 0);
+        }
+        if(cost != null && cost > 0){
+            bookingForms.removeIf(booking -> cost < booking.getCostPerDay());
+        }
+        if (post_code != null && !post_code.equals("")) {
+            bookingForms.removeIf(booking -> post_code.compareTo(booking.getPostCode()) < 0);
+        }
+        if (city != null && !city.equals("")) {
+            bookingForms.removeIf(booking -> city.compareTo(booking.getCity()) < 0);
+        }
+        if (street != null && !street.equals("")) {
+            bookingForms.removeIf(booking -> street.compareTo(booking.getStreet()) < 0);
         }
         if (username != null && !username.equals(""))
             bookingForms.removeIf(booking -> !username.equals(booking.getUsername()));
