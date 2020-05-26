@@ -48,7 +48,7 @@ public class BookingService {
         return pages;
     }
 
-    public PageForm getAll(String startDateFromString, String startDateToString, String endDateFromString, String endDateToString, double cost, String post_code, String city, String street,  String username, Integer pageSize, Integer pageNumber, User currentUser) {
+    public PageForm getAll(String startDateFromString, String startDateToString, String endDateFromString, String endDateToString, Double cost, String post_code, String city, String street,  String username, Integer pageSize, Integer pageNumber, User currentUser) {
         List<Booking> bookings;
         if (currentUser.getRole().equals("USER"))
             bookings = bookingRepository.findByOwner(currentUser.getId());
@@ -77,11 +77,9 @@ public class BookingService {
             LocalDate dateTo = LocalDate.parse(endDateToString);
             bookingForms.removeIf(booking -> dateTo.compareTo(booking.getEndDateTime()) < 0);
         }
-
-        if(cost > 0){
+        if(cost != null && cost > 0){
             bookingForms.removeIf(booking -> cost < booking.getCostPerDay());
         }
-
         if (post_code != null && !post_code.equals("")) {
             bookingForms.removeIf(booking -> post_code.compareTo(booking.getPostCode()) < 0);
         }
@@ -91,7 +89,6 @@ public class BookingService {
         if (street != null && !street.equals("")) {
             bookingForms.removeIf(booking -> street.compareTo(booking.getStreet()) < 0);
         }
-
         if (username != null && !username.equals(""))
             bookingForms.removeIf(booking -> !username.equals(booking.getUsername()));
         if(pageSize != null && pageNumber != null && pageSize != 0 && pageNumber != 0){
