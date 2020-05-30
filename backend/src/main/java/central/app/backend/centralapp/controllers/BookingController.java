@@ -38,11 +38,12 @@ public class BookingController {
 
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("")
-    public ResponseEntity<PageForm> getAllBookings(@RequestParam(name = "startDateFrom", required = false) String startDateFromString,
-                                                   @RequestParam(name = "startDateTo", required = false) String startDateToString,
-                                                   @RequestParam(name = "endDateFrom", required = false) String endDateFromString,
-                                                   @RequestParam(name = "endDateTo", required = false) String endDateToString,
-                                                   @RequestParam(name = "cost", required = false) Double cost,
+    public ResponseEntity<PageForm> getAllBookings(@RequestParam(name = "startDateFrom", required = false) String startDateFrom,
+                                                   @RequestParam(name = "startDateTo", required = false) String startDateTo,
+                                                   @RequestParam(name = "endDateFrom", required = false) String endDateFrom,
+                                                   @RequestParam(name = "endDateTo", required = false) String endDateTo,
+                                                   @RequestParam(name = "costUp", required = false) Double costUp,
+                                                   @RequestParam(name = "costDown", required = false) Double costDown,
                                                    @RequestParam(name = "username", required = false) String username,
                                                    @RequestParam(name = "postCode", required = false) String postCode,
                                                    @RequestParam(name = "city", required = false) String city,
@@ -52,7 +53,7 @@ public class BookingController {
                                                    @RequestHeader(name = "Authorization") String requestAuthorizationHeader) {
         String token = requestAuthorizationHeader.substring(7);
         User currentUser = userService.getUserByToken(token);
-        return ResponseEntity.ok().body(bookingService.getAll(startDateFromString, startDateToString, endDateFromString, endDateToString, cost, postCode, city, street, username, pageSize, pageNumber, currentUser));
+        return ResponseEntity.ok().body(bookingService.getAll(startDateFrom, startDateTo, endDateFrom, endDateTo, costUp, costDown, postCode, city, street, username, pageSize, pageNumber, currentUser));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','USER')")

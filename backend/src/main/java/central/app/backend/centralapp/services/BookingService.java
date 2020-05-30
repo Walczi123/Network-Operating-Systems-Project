@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class BookingService {
@@ -48,7 +49,7 @@ public class BookingService {
         return pages;
     }
 
-    public PageForm getAll(String startDateFromString, String startDateToString, String endDateFromString, String endDateToString, Double cost, String post_code, String city, String street,  String username, Integer pageSize, Integer pageNumber, User currentUser) {
+    public PageForm getAll(String startDateFrom, String startDateTo, String endDateFrom, String endDateTo, Double costUp, Double costDown, String post_code, String city, String street,  String username, Integer pageSize, Integer pageNumber, User currentUser) {
         List<Booking> bookings;
         if (currentUser.getRole().equals("USER"))
             bookings = bookingRepository.findByOwner(currentUser.getId());
@@ -61,33 +62,39 @@ public class BookingService {
         for (Booking book : bookings) {
             bookingForms.add(new BookingForm(book, userService.getUsername(book.getOwner())));
         }
-        if (startDateFromString != null && !startDateFromString.equals("")) {
-            LocalDate dateFrom = LocalDate.parse(startDateFromString);
+
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        if (startDateFrom != null && !startDateFrom.equals("")) {
+            LocalDate dateFrom = LocalDate.parse(startDateFrom, df);
             bookingForms.removeIf(booking -> dateFrom.compareTo(booking.getStartDateTime()) > 0);
         }
-        if (startDateToString != null && !startDateToString.equals("")) {
-            LocalDate dateTo = LocalDate.parse(startDateToString);
+        if (startDateTo != null && !startDateTo.equals("")) {
+            LocalDate dateTo = LocalDate.parse(startDateTo, df);
             bookingForms.removeIf(booking -> dateTo.compareTo(booking.getStartDateTime()) < 0);
         }
-        if (endDateFromString != null && !endDateFromString.equals("")) {
-            LocalDate dateFrom = LocalDate.parse(endDateFromString);
+        if (endDateFrom != null && !endDateFrom.equals("")) {
+            LocalDate dateFrom = LocalDate.parse(endDateFrom, df);
             bookingForms.removeIf(booking -> dateFrom.compareTo(booking.getEndDateTime()) > 0);
         }
-        if (endDateToString != null && !endDateToString.equals("")) {
-            LocalDate dateTo = LocalDate.parse(endDateToString);
+        if (endDateTo != null && !endDateTo.equals("")) {
+            LocalDate dateTo = LocalDate.parse(endDateTo, df);
             bookingForms.removeIf(booking -> dateTo.compareTo(booking.getEndDateTime()) < 0);
         }
-        if(cost != null && cost > 0){
-            bookingForms.removeIf(booking -> cost < booking.getCostPerDay());
+        if(costUp != null && costUp > 0){
+            bookingForms.removeIf(booking -> costUp < booking.getCostPerDay());
+        }
+        if(costDown != null && costDown > 0) {
+            bookingForms.removeIf(booking -> costDown > booking.getCostPerDay());
         }
         if (post_code != null && !post_code.equals("")) {
-            bookingForms.removeIf(booking -> post_code.compareTo(booking.getPostCode()) < 0);
+            bookingForms.removeIf(booking -> post_code.compareTo(booking.getPostCode()) != 0);
         }
         if (city != null && !city.equals("")) {
-            bookingForms.removeIf(booking -> city.compareTo(booking.getCity()) < 0);
+            bookingForms.removeIf(booking -> city.compareTo(booking.getCity()) != 0);
         }
         if (street != null && !street.equals("")) {
-            bookingForms.removeIf(booking -> street.compareTo(booking.getStreet()) < 0);
+            bookingForms.removeIf(booking -> street.compareTo(booking.getStreet()) != 0);
         }
         if (username != null && !username.equals(""))
             bookingForms.removeIf(booking -> !username.equals(booking.getUsername()));
